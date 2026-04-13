@@ -8,6 +8,8 @@ const Hero = () => {
   const [loading, setLoading] = useState(false)
   const [isShaking, setIsShaking] = useState(false)
 
+  const [errorStatus, setErrorStatus] = useState<string | null>(null)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email.trim()) {
@@ -17,6 +19,7 @@ const Hero = () => {
     }
 
     setLoading(true)
+    setErrorStatus(null)
     try {
       const { error } = await supabase
         .from('waitlist')
@@ -26,7 +29,8 @@ const Hero = () => {
       setSubmitted(true)
     } catch (error) {
       console.error('Error joining waitlist:', error)
-      alert('Something went wrong. Please try again.')
+      setErrorStatus('Something went wrong. Please check your connection.')
+      setTimeout(() => setErrorStatus(null), 5000)
     } finally {
       setLoading(false)
     }
@@ -38,6 +42,20 @@ const Hero = () => {
       paddingTop: '8rem',
       paddingBottom: '4rem'
     }}>
+      {errorStatus && (
+        <div className="toast-container">
+          <div className="toast">
+            <div style={{ color: 'var(--error)' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <span>{errorStatus}</span>
+          </div>
+        </div>
+      )}
       <div className="badge-pill" style={{
         display: 'inline-flex',
         alignItems: 'center',

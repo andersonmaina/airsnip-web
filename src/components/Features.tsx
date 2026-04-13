@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Terminal, Layout, Tag, Shield, Clock, Globe } from 'lucide-react'
 
 const Features = () => {

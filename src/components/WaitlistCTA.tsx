@@ -8,6 +8,8 @@ const WaitlistCTA = () => {
   const [loading, setLoading] = useState(false)
   const [isShaking, setIsShaking] = useState(false)
 
+  const [errorStatus, setErrorStatus] = useState<string | null>(null)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email.trim()) {
@@ -17,6 +19,7 @@ const WaitlistCTA = () => {
     }
 
     setLoading(true)
+    setErrorStatus(null)
     try {
       const { error } = await supabase
         .from('waitlist')
@@ -26,7 +29,8 @@ const WaitlistCTA = () => {
       setSubmitted(true)
     } catch (error) {
       console.error('Error joining waitlist:', error)
-      alert('Something went wrong. Please try again.')
+      setErrorStatus('Something went wrong. Please check your connection.')
+      setTimeout(() => setErrorStatus(null), 5000)
     } finally {
       setLoading(false)
     }
@@ -36,8 +40,23 @@ const WaitlistCTA = () => {
     <section className="cta-section section-padding" style={{
       background: 'var(--primary)',
       color: 'var(--white)',
-      textAlign: 'center'
+      textAlign: 'center',
+      position: 'relative'
     }}>
+      {errorStatus && (
+        <div className="toast-container" style={{ color: 'var(--text-primary)' }}>
+          <div className="toast">
+            <div style={{ color: 'var(--error)' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <span>{errorStatus}</span>
+          </div>
+        </div>
+      )}
       <div className="container">
         <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Be first when we launch.</h2>
         <p className="subtitle" style={{ color: 'rgba(255, 255, 255, 0.9)', marginBottom: '2rem', fontSize: '1.25rem' }}>
