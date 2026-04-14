@@ -8,13 +8,16 @@ export default function AuthPoint() {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    // Supabase puts the token in the URL hash: #access_token=eyJ...&...
-    const hash = window.location.hash.slice(1) // remove leading #
+    // Supabase hash: #access_token=eyJ...&refresh_token=abc...&token_type=bearer
+    const hash = window.location.hash.slice(1)
     const params = new URLSearchParams(hash)
     const accessToken = params.get('access_token')
+    const refreshToken = params.get('refresh_token') ?? ''
 
     if (accessToken) {
-      setToken(accessToken)
+      // Combine both into one base64 blob → single copy in terminal
+      const combined = btoa(JSON.stringify({ a: accessToken, r: refreshToken }))
+      setToken(combined)
       setState('success')
     } else {
       setState('error')
@@ -73,7 +76,8 @@ export default function AuthPoint() {
 
             <h1 style={styles.heading}>You're authenticated</h1>
             <p style={styles.body}>
-              Copy the token below and paste it back into your terminal.
+              Click <strong style={{ color: '#F8FAFC' }}>Copy auth token</strong> below,
+              then switch to your terminal and paste it at the prompt.
             </p>
 
             {/* Token box */}
@@ -93,7 +97,7 @@ export default function AuthPoint() {
                   background: copied ? '#22C55E' : '#0EA5E9',
                 }}
               >
-                {copied ? '✓  Copied!' : 'Copy token'}
+                {copied ? '✓  Copied!' : 'Copy auth token'}
               </button>
             </div>
 
@@ -116,8 +120,8 @@ export default function AuthPoint() {
       </div>
 
       <p style={styles.footer}>
-        <a href="https://airsnip-vercel.vercel.app" style={{ color: '#0EA5E9' }}>
-          airsnip-vercel.vercel.app
+        <a href="https://airsnip-web.vercel.app" style={{ color: '#0EA5E9' }}>
+          airsnip-web.vercel.app
         </a>
       </p>
     </div>
