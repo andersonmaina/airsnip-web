@@ -80,7 +80,7 @@ export default function AuthPoint() {
 
   return (
     <div style={styles.page}>
-      {/* Logo */}
+      {/* Branding */}
       <div style={styles.logo}>
         <span style={styles.logoText}>airsnip</span>
         <span style={styles.logoBadge}>CLI</span>
@@ -91,24 +91,20 @@ export default function AuthPoint() {
         {state === 'loading' && (
           <div style={styles.center}>
             <div style={styles.spinner} />
-            <p style={styles.muted}>Reading your session…</p>
+            <p style={styles.muted}>Authenticating session…</p>
           </div>
         )}
 
         {/* ── Error (no token in URL) ───────────────────────────────────── */}
         {state === 'error' && (
           <>
-            <div style={{ ...styles.iconCircle, background: '#FEE2E2' }}>
-              <span style={{ fontSize: '1.5rem' }}>✗</span>
+            <div style={{ ...styles.iconCircle, background: 'var(--bg-light)' }}>
+              <span style={{ fontSize: '1.5rem', color: 'var(--error)' }}>✗</span>
             </div>
-            <h1 style={styles.heading}>No token found</h1>
+            <h1 style={styles.heading}>Session Expired</h1>
             <p style={styles.body}>
-              This page is only reachable via an Airsnip auth link.
-              Head back to your terminal and run:
+              Please return to your terminal and run <code>airsnip login</code> again.
             </p>
-            <div style={styles.codeBlock}>
-              <code>airsnip login</code>
-            </div>
           </>
         )}
 
@@ -116,44 +112,33 @@ export default function AuthPoint() {
         {state === 'success' && mode === 'callback' && callbackStatus === 'sending' && (
           <div style={styles.center}>
             <div style={styles.spinner} />
-            <p style={styles.muted}>Sending auth token to your terminal…</p>
+            <p style={styles.muted}>Syncing with your local terminal…</p>
           </div>
         )}
 
-        {/* ── Done — CLI received the token ─────────────────────────────── */}
+        {/* ── Done — CLI received the token (Shallow Success) ───────────── */}
         {state === 'done' && (
-          <>
-            <div style={{ ...styles.iconCircle, background: '#DCFCE7' }}>
-              <span style={{ fontSize: '1.75rem' }}>✓</span>
+          <div style={styles.center}>
+            <div style={{ ...styles.iconCircle, background: 'var(--bg-light)' }}>
+              <CheckIcon size={32} />
             </div>
-            <h1 style={styles.heading}>You're logged in!</h1>
-            <p style={styles.body}>
-              Your terminal has been authenticated automatically.
-              <br />
-              Switch back to your terminal to continue.
-            </p>
-            <div style={styles.terminalBox}>
-              <p style={styles.terminalLabel}>Your terminal should show:</p>
-              <div style={styles.codeBlock}>
-                <code style={{ color: '#22C55E' }}>✓ Logged in as you@email.com</code>
-              </div>
-            </div>
-            <p style={styles.safeToClose}>✓ &nbsp;Safe to close this tab.</p>
-          </>
+            <h1 style={styles.heading}>Success</h1>
+            <p style={styles.body}>You can now close this tab and resume in CLI.</p>
+          </div>
         )}
 
         {/* ── Manual fallback (no callback URL or callback failed) ─────── */}
         {(state === 'success' && mode === 'manual') && (
           <>
-            <div style={{ ...styles.iconCircle, background: '#DCFCE7' }}>
-              <span style={{ fontSize: '1.5rem' }}>✓</span>
+            <div style={{ ...styles.iconCircle, background: 'var(--bg-light)' }}>
+              <CheckIcon size={24} />
             </div>
 
-            <h1 style={styles.heading}>You're authenticated</h1>
+            <h1 style={styles.heading}>Authenticated</h1>
             <p style={styles.body}>
               {callbackStatus === 'failed'
-                ? 'Could not reach your terminal automatically. Copy the token below and paste it at the terminal prompt.'
-                : <>Click <strong style={{ color: '#F8FAFC' }}>Copy auth token</strong> below, then switch to your terminal and paste it at the prompt.</>
+                ? 'Manual sync required. Paste this token into your terminal.'
+                : 'Copy the token below and paste it into your terminal prompt.'
               }
             </p>
 
@@ -164,43 +149,38 @@ export default function AuthPoint() {
                 readOnly
                 value={token}
                 style={styles.tokenBox}
-                rows={4}
+                rows={3}
                 onClick={(e) => (e.target as HTMLTextAreaElement).select()}
               />
               <button
                 onClick={handleCopy}
                 style={{
                   ...styles.copyBtn,
-                  background: copied ? '#22C55E' : '#0EA5E9',
+                  background: copied ? 'var(--success)' : 'var(--primary)',
                 }}
               >
                 {copied ? '✓  Copied!' : 'Copy auth token'}
               </button>
             </div>
-
-            {/* Step reminder */}
-            <div style={styles.steps}>
-              <p style={styles.stepLabel}>Back in your terminal:</p>
-              <div style={styles.codeBlock}>
-                <code>? Paste access token: <span style={{ color: '#0EA5E9' }}>█</span></code>
-              </div>
-              <p style={styles.muted}>
-                Paste the token above at that prompt and press <kbd style={styles.kbd}>Enter</kbd>.
-              </p>
-            </div>
-
-            <p style={styles.safeToClose}>✓ &nbsp;Safe to close this tab after copying.</p>
           </>
         )}
       </div>
 
       <p style={styles.footer}>
-        <a href="https://airsnip-web.vercel.app" style={{ color: '#0EA5E9' }}>
-          airsnip-web.vercel.app
+        <a href="/" style={{ color: 'var(--text-muted)' }}>
+          ← Back to home
         </a>
       </p>
     </div>
   )
+}
+
+function CheckIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+  );
 }
 
 // ── Inline styles ─────────────────────────────────────────────────────────────
@@ -208,7 +188,7 @@ export default function AuthPoint() {
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: '100vh',
-    background: '#0F172A',
+    background: 'var(--bg-light)',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -223,165 +203,104 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: '2rem',
   },
   logoText: {
-    fontSize: '1.5rem',
+    fontSize: '1.25rem',
     fontWeight: 700,
-    color: '#F8FAFC',
+    color: 'var(--text-primary)',
     fontFamily: "'DM Mono', monospace",
   },
   logoBadge: {
-    fontSize: '0.7rem',
-    fontWeight: 600,
-    background: '#0EA5E9',
+    fontSize: '0.6rem',
+    fontWeight: 700,
+    background: 'var(--text-primary)',
     color: '#fff',
-    padding: '2px 8px',
-    borderRadius: '100px',
-    letterSpacing: '0.05em',
+    padding: '1px 6px',
+    borderRadius: '4px',
+    textTransform: 'uppercase',
   },
   card: {
-    background: '#1E293B',
-    border: '1px solid #334155',
-    borderRadius: '20px',
-    padding: '2.5rem 2rem',
+    background: 'var(--white)',
+    border: '1px solid var(--border-blue)',
+    borderRadius: '24px',
+    padding: '3rem 2rem',
     width: '100%',
-    maxWidth: '520px',
+    maxWidth: '440px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: '1.25rem',
-    boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
+    gap: '1.5rem',
+    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05)',
   },
   center: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     gap: '1rem',
-    padding: '2rem 0',
+    textAlign: 'center',
   },
   spinner: {
-    width: '36px',
-    height: '36px',
-    border: '3px solid #334155',
-    borderTop: '3px solid #0EA5E9',
+    width: '32px',
+    height: '32px',
+    border: '3px solid var(--bg-light)',
+    borderTop: '3px solid var(--primary)',
     borderRadius: '50%',
-    animation: 'spin 0.8s linear infinite',
+    animation: 'spin 0.6s linear infinite',
   },
   iconCircle: {
-    width: '56px',
-    height: '56px',
+    width: '64px',
+    height: '64px',
     borderRadius: '50%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: '0.5rem',
   },
   heading: {
     fontSize: '1.5rem',
     fontWeight: 700,
-    color: '#F8FAFC',
-    textAlign: 'center',
+    color: 'var(--text-primary)',
   },
   body: {
     fontSize: '0.95rem',
-    color: '#94A3B8',
-    textAlign: 'center',
-    lineHeight: 1.6,
+    color: 'var(--text-muted)',
+    lineHeight: 1.5,
   },
   tokenWrapper: {
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.625rem',
+    gap: '0.75rem',
+    marginTop: '0.5rem',
   },
   tokenBox: {
     width: '100%',
-    background: '#0F172A',
-    border: '1px solid #334155',
-    borderRadius: '10px',
-    padding: '0.875rem 1rem',
-    color: '#38BDF8',
+    background: 'var(--bg-light)',
+    border: '1px solid var(--border-blue)',
+    borderRadius: '12px',
+    padding: '1rem',
+    color: 'var(--primary-dark)',
     fontFamily: "'DM Mono', monospace",
-    fontSize: '0.78rem',
-    lineHeight: 1.6,
+    fontSize: '0.8rem',
+    lineHeight: 1.5,
     resize: 'none',
-    cursor: 'text',
     wordBreak: 'break-all',
   },
   copyBtn: {
     width: '100%',
-    padding: '0.75rem',
+    padding: '0.875rem',
     border: 'none',
-    borderRadius: '10px',
+    borderRadius: '12px',
     color: '#fff',
-    fontFamily: "'DM Sans', sans-serif",
-    fontSize: '0.95rem',
+    fontSize: '1rem',
     fontWeight: 600,
     cursor: 'pointer',
-    transition: 'background 0.2s ease',
-    letterSpacing: '0.01em',
-  },
-  terminalBox: {
-    width: '100%',
-    background: '#0F172A',
-    border: '1px solid #1E3A5F',
-    borderRadius: '12px',
-    padding: '1.125rem 1.25rem',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.625rem',
-  },
-  steps: {
-    width: '100%',
-    background: '#0F172A',
-    border: '1px solid #1E3A5F',
-    borderRadius: '12px',
-    padding: '1.125rem 1.25rem',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.625rem',
-  },
-  stepLabel: {
-    fontSize: '0.8rem',
-    fontWeight: 600,
-    color: '#64748B',
-    textTransform: 'uppercase',
-    letterSpacing: '0.08em',
-  },
-  terminalLabel: {
-    fontSize: '0.8rem',
-    fontWeight: 600,
-    color: '#64748B',
-    textTransform: 'uppercase',
-    letterSpacing: '0.08em',
-  },
-  codeBlock: {
-    background: '#020617',
-    border: '1px solid #1E293B',
-    borderRadius: '8px',
-    padding: '0.625rem 0.875rem',
-    fontFamily: "'DM Mono', monospace",
-    fontSize: '0.82rem',
-    color: '#94A3B8',
-  },
-  muted: {
-    fontSize: '0.85rem',
-    color: '#64748B',
-    textAlign: 'center',
-  },
-  kbd: {
-    background: '#1E293B',
-    border: '1px solid #334155',
-    borderRadius: '4px',
-    padding: '1px 6px',
-    fontSize: '0.8rem',
-    color: '#94A3B8',
-  },
-  safeToClose: {
-    fontSize: '0.82rem',
-    color: '#22C55E',
-    textAlign: 'center',
+    transition: 'all 0.2s ease',
   },
   footer: {
-    marginTop: '1.5rem',
-    fontSize: '0.8rem',
-    color: '#475569',
+    marginTop: '2rem',
+    fontSize: '0.9rem',
   },
+  muted: {
+    fontSize: '0.9rem',
+    color: 'var(--text-muted)',
+  }
 }
