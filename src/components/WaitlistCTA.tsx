@@ -57,17 +57,19 @@ const WaitlistCTA = () => {
           </div>
         </div>
       )}
-      <div className="container">
-        <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Be first when we launch.</h2>
-        <p className="subtitle" style={{ color: 'rgba(255, 255, 255, 0.9)', marginBottom: '2rem', fontSize: '1.25rem' }}>
+      <div className="container" style={{ width: '100%' }}>
+        <h2 style={{ fontSize: 'clamp(2rem, 6vw, 2.5rem)', marginBottom: '1rem' }}>Be first when we launch.</h2>
+        <p className="subtitle" style={{ color: 'rgba(255, 255, 255, 0.9)', marginBottom: '2rem', fontSize: 'clamp(1rem, 4vw, 1.25rem)' }}>
           Join the waitlist. We'll reach out when team access opens.
         </p>
-        <div className="waitlist-container" style={{ maxWidth: '500px', margin: '0 auto' }}>
+        <div className="waitlist-container" style={{ maxWidth: '500px', margin: '0 auto', width: '100%' }}>
           {!submitted ? (
             <form className={`waitlist-form ${isShaking ? 'shake' : ''}`} onSubmit={handleSubmit} style={{
               display: 'flex',
               gap: '0.5rem',
-              padding: '0.25rem'
+              padding: '0.25rem',
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: '10px'
             }}>
               <input 
                 type="email" 
@@ -79,7 +81,8 @@ const WaitlistCTA = () => {
                   padding: '0.75rem 1rem',
                   border: 'none',
                   borderRadius: '8px',
-                  fontSize: '1rem'
+                  fontSize: '1rem',
+                  width: '100%'
                 }}
               />
               <button type="submit" disabled={loading} style={{
@@ -93,6 +96,7 @@ const WaitlistCTA = () => {
                 whiteSpace: 'nowrap',
                 display: 'flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '0.5rem',
                 opacity: loading ? 0.7 : 1
               }}>

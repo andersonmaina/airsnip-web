@@ -39,7 +39,7 @@ const Hero = () => {
   return (
     <header className="hero container" style={{
       textAlign: 'center',
-      paddingTop: '8rem',
+      paddingTop: 'min(8rem, 15vh)',
       paddingBottom: '4rem'
     }}>
       {errorStatus && (
@@ -80,23 +80,26 @@ const Hero = () => {
         animation: 'slideUp 500ms ease-out forwards'
       }}>AirDrop for developer teams.</h1>
       <p className="subtitle" style={{
-        fontSize: '1.25rem',
+        fontSize: 'clamp(1rem, 4vw, 1.25rem)',
         color: 'var(--text-muted)',
         maxWidth: '600px',
-        margin: '0 auto 3rem'
+        margin: '0 auto 3rem',
+        padding: '0 1rem'
       }}>
         Push a file, function, or folder from your terminal. 
         Any teammate can pull it instantly — no browser, 
         no copy-paste, no context switching.
       </p>
 
-      <div className="waitlist-container" style={{ maxWidth: '500px', margin: '0 auto 1.5rem' }}>
+      <div className="waitlist-container" style={{ maxWidth: '500px', margin: '0 auto 1.5rem', width: '100%' }}>
         {!submitted ? (
           <form className={`waitlist-form ${isShaking ? 'shake' : ''}`} onSubmit={handleSubmit} style={{
             display: 'flex',
             gap: '0.5rem',
             background: 'var(--white)',
-            padding: '0.25rem'
+            padding: '0.25rem',
+            borderRadius: '10px',
+            border: '1px solid var(--border-blue)'
           }}>
             <input 
               type="email" 
@@ -106,9 +109,11 @@ const Hero = () => {
               style={{
                 flex: 1,
                 padding: '0.75rem 1rem',
-                border: '1px solid var(--border-blue)',
+                border: 'none',
+                background: 'transparent',
                 borderRadius: '8px',
-                fontSize: '1rem'
+                fontSize: '1rem',
+                width: '100%'
               }}
             />
             <button type="submit" disabled={loading} style={{
@@ -122,6 +127,7 @@ const Hero = () => {
               whiteSpace: 'nowrap',
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: '0.5rem',
               opacity: loading ? 0.7 : 1
             }}>
@@ -161,20 +167,22 @@ const HeroTerminal = () => {
         <div className="terminal-block" style={{
             background: 'var(--terminal-bg)',
             borderRadius: '12px',
-            padding: '1rem',
+            padding: '1.25rem',
             textAlign: 'left',
             boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
             margin: '4rem auto 0',
-            maxWidth: '600px'
+            maxWidth: '600px',
+            width: '100%',
+            overflowX: 'auto'
         }}>
-            <div className="terminal-header" style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-                <div className="dot red" style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#FF5F56' }}></div>
-                <div className="dot amber" style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#FFBD2E' }}></div>
-                <div className="dot green" style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#27C93F' }}></div>
+            <div className="terminal-header" style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem' }}>
+                <div className="dot red" style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#FF5F56' }}></div>
+                <div className="dot amber" style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#FFBD2E' }}></div>
+                <div className="dot green" style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#27C93F' }}></div>
             </div>
-            <div className="terminal-content" style={{ color: 'white', fontSize: '0.875rem', lineHeight: '1.6' }}>
+            <div className="terminal-content" style={{ color: 'white', fontSize: 'clamp(0.75rem, 3.5vw, 0.875rem)', lineHeight: '1.6', whiteSpace: 'nowrap' }}>
                 {lines.map((text, i) => (
-                    <div key={i}>
+                    <div key={i} style={{ marginBottom: '0.25rem' }}>
                         <span className="prompt" style={{ color: 'var(--primary)', marginRight: '0.5rem' }}>$</span>
                         <Typewriter text={text} delay={1000 + (i * 1500)} />
                     </div>

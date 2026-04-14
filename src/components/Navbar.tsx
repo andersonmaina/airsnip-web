@@ -9,7 +9,7 @@ const Navbar = () => {
       background: 'var(--white)',
       borderBottom: '1px solid var(--border-blue)',
       zIndex: 1000,
-      padding: '1rem 0',
+      padding: '0.75rem 0',
       animation: 'fadeIn 300ms ease-out forwards'
     }}>
       <div className="container nav-content" style={{
@@ -30,11 +30,12 @@ const Navbar = () => {
         </Link>
         <div className="nav-links" style={{
           display: 'flex',
-          gap: '2rem'
+          gap: '2rem',
+          alignItems: 'center'
         }}>
           <Link to="/docs" style={{ fontWeight: 500, color: 'var(--text-muted)' }}>Docs</Link>
-          <a href="https://github.com/Airsnip" style={{ fontWeight: 500, color: 'var(--text-muted)' }}>GitHub</a>
-          <a href="https://x.com/aairsnip" style={{ fontWeight: 500, color: 'var(--text-muted)' }}>X (Twitter)</a>
+          <a href="https://github.com/Airsnip" className="mobile-hide" style={{ fontWeight: 500, color: 'var(--text-muted)' }}>GitHub</a>
+          <a href="https://x.com/aairsnip" style={{ fontWeight: 500, color: 'var(--text-muted)' }}>X</a>
         </div>
       </div>
     </nav>
