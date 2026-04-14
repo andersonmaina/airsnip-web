@@ -1,26 +1,69 @@
 import { useEffect, useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
 
-type State = 'loading' | 'success' | 'error'
+type State = 'loading' | 'success' | 'done' | 'error'
+type LoginMode = 'callback' | 'manual'  // callback = CLI browser flow, manual = copy-paste fallback
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+)
 
 export default function AuthPoint() {
   const [state, setState] = useState<State>('loading')
+  const [mode, setMode] = useState<LoginMode>('callback')
   const [token, setToken] = useState('')
   const [copied, setCopied] = useState(false)
+  const [callbackStatus, setCallbackStatus] = useState<'sending' | 'sent' | 'failed'>('sending')
 
   useEffect(() => {
-    // Supabase hash: #access_token=eyJ...&refresh_token=abc...&token_type=bearer
+    // 1. Parse the hash from Supabase magic link
+    // Format: #access_token=eyJ...&refresh_token=abc...&token_type=bearer
     const hash = window.location.hash.slice(1)
     const params = new URLSearchParams(hash)
     const accessToken = params.get('access_token')
     const refreshToken = params.get('refresh_token') ?? ''
 
-    if (accessToken) {
-      // Combine both into one base64 blob → single copy in terminal
-      const combined = btoa(JSON.stringify({ a: accessToken, r: refreshToken }))
-      setToken(combined)
-      setState('success')
-    } else {
+    // 2. Check if we have a CLI callback URL in the query string
+    const searchParams = new URLSearchParams(window.location.search)
+    const callbackUrl = searchParams.get('callback')
+
+    if (!accessToken) {
       setState('error')
+      return
+    }
+
+    // Build the base64 token blob (for manual copy-paste fallback)
+    const combined = btoa(JSON.stringify({ a: accessToken, r: refreshToken }))
+    setToken(combined)
+
+    if (callbackUrl) {
+      // CLI browser flow: POST tokens directly to the local CLI server
+      setMode('callback')
+      setState('success')
+
+      fetch(callbackUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: accessToken, refresh_token: refreshToken }),
+      })
+        .then((res) => {
+          if (res.ok) {
+            setCallbackStatus('sent')
+            setState('done')
+          } else {
+            setCallbackStatus('failed')
+            setMode('manual') // fall back to manual copy
+          }
+        })
+        .catch(() => {
+          setCallbackStatus('failed')
+          setMode('manual') // fall back to manual copy
+        })
+    } else {
+      // Manual flow: show copy-paste instructions
+      setMode('manual')
+      setState('success')
     }
   }, [])
 
@@ -30,7 +73,6 @@ export default function AuthPoint() {
       setCopied(true)
       setTimeout(() => setCopied(false), 2500)
     } catch {
-      // fallback: select the textarea
       const el = document.getElementById('token-box') as HTMLTextAreaElement
       el?.select()
     }
@@ -45,6 +87,7 @@ export default function AuthPoint() {
       </div>
 
       <div style={styles.card}>
+        {/* ── Loading ──────────────────────────────────────────────────── */}
         {state === 'loading' && (
           <div style={styles.center}>
             <div style={styles.spinner} />
@@ -52,6 +95,7 @@ export default function AuthPoint() {
           </div>
         )}
 
+        {/* ── Error (no token in URL) ───────────────────────────────────── */}
         {state === 'error' && (
           <>
             <div style={{ ...styles.iconCircle, background: '#FEE2E2' }}>
@@ -59,7 +103,7 @@ export default function AuthPoint() {
             </div>
             <h1 style={styles.heading}>No token found</h1>
             <p style={styles.body}>
-              This page is only reachable via an Airsnip magic link email.
+              This page is only reachable via an Airsnip auth link.
               Head back to your terminal and run:
             </p>
             <div style={styles.codeBlock}>
@@ -68,7 +112,38 @@ export default function AuthPoint() {
           </>
         )}
 
-        {state === 'success' && (
+        {/* ── Sending to CLI callback ───────────────────────────────────── */}
+        {state === 'success' && mode === 'callback' && callbackStatus === 'sending' && (
+          <div style={styles.center}>
+            <div style={styles.spinner} />
+            <p style={styles.muted}>Sending auth token to your terminal…</p>
+          </div>
+        )}
+
+        {/* ── Done — CLI received the token ─────────────────────────────── */}
+        {state === 'done' && (
+          <>
+            <div style={{ ...styles.iconCircle, background: '#DCFCE7' }}>
+              <span style={{ fontSize: '1.75rem' }}>✓</span>
+            </div>
+            <h1 style={styles.heading}>You're logged in!</h1>
+            <p style={styles.body}>
+              Your terminal has been authenticated automatically.
+              <br />
+              Switch back to your terminal to continue.
+            </p>
+            <div style={styles.terminalBox}>
+              <p style={styles.terminalLabel}>Your terminal should show:</p>
+              <div style={styles.codeBlock}>
+                <code style={{ color: '#22C55E' }}>✓ Logged in as you@email.com</code>
+              </div>
+            </div>
+            <p style={styles.safeToClose}>✓ &nbsp;Safe to close this tab.</p>
+          </>
+        )}
+
+        {/* ── Manual fallback (no callback URL or callback failed) ─────── */}
+        {(state === 'success' && mode === 'manual') && (
           <>
             <div style={{ ...styles.iconCircle, background: '#DCFCE7' }}>
               <span style={{ fontSize: '1.5rem' }}>✓</span>
@@ -76,8 +151,10 @@ export default function AuthPoint() {
 
             <h1 style={styles.heading}>You're authenticated</h1>
             <p style={styles.body}>
-              Click <strong style={{ color: '#F8FAFC' }}>Copy auth token</strong> below,
-              then switch to your terminal and paste it at the prompt.
+              {callbackStatus === 'failed'
+                ? 'Could not reach your terminal automatically. Copy the token below and paste it at the terminal prompt.'
+                : <>Click <strong style={{ color: '#F8FAFC' }}>Copy auth token</strong> below, then switch to your terminal and paste it at the prompt.</>
+              }
             </p>
 
             {/* Token box */}
@@ -112,9 +189,7 @@ export default function AuthPoint() {
               </p>
             </div>
 
-            <p style={styles.safeToClose}>
-              ✓ &nbsp;Safe to close this tab after copying.
-            </p>
+            <p style={styles.safeToClose}>✓ &nbsp;Safe to close this tab after copying.</p>
           </>
         )}
       </div>
@@ -128,7 +203,7 @@ export default function AuthPoint() {
   )
 }
 
-// ── Inline styles (no Tailwind, stays self-contained) ────────────────────────
+// ── Inline styles ─────────────────────────────────────────────────────────────
 
 const styles: Record<string, React.CSSProperties> = {
   page: {
@@ -243,6 +318,16 @@ const styles: Record<string, React.CSSProperties> = {
     transition: 'background 0.2s ease',
     letterSpacing: '0.01em',
   },
+  terminalBox: {
+    width: '100%',
+    background: '#0F172A',
+    border: '1px solid #1E3A5F',
+    borderRadius: '12px',
+    padding: '1.125rem 1.25rem',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.625rem',
+  },
   steps: {
     width: '100%',
     background: '#0F172A',
@@ -254,6 +339,13 @@ const styles: Record<string, React.CSSProperties> = {
     gap: '0.625rem',
   },
   stepLabel: {
+    fontSize: '0.8rem',
+    fontWeight: 600,
+    color: '#64748B',
+    textTransform: 'uppercase',
+    letterSpacing: '0.08em',
+  },
+  terminalLabel: {
     fontSize: '0.8rem',
     fontWeight: 600,
     color: '#64748B',
