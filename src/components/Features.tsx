@@ -1,36 +1,46 @@
 import React, { useEffect, useRef } from 'react'
-import { Terminal, Layout, Tag, Shield, Clock, Globe } from 'lucide-react'
+import { Terminal, Layout, Shield, Clock, Globe, Code, UserCheck, Cpu } from 'lucide-react'
 
 const Features = () => {
   const features = [
     {
-      title: 'CLI-first',
-      description: 'Built for the terminal. Runs where you work.',
+      title: 'CLI-First',
+      description: 'Built for the terminal. Share and consume natively without leaving your shell.',
       icon: <Terminal size={24} />
     },
     {
-      title: 'Team workspaces',
-      description: 'Invite teammates. Share code privately.',
+      title: 'Team Workspaces',
+      description: 'Create private context scopes and invite developers to collaborate securely.',
       icon: <Layout size={24} />
     },
     {
-      title: 'Tag-based',
-      description: 'Name your push. Pull by tag, not by URL.',
-      icon: <Tag size={24} />
+      title: 'AST Function Extraction',
+      description: 'Instantly parse and push individual JS/TS helper functions directly by name.',
+      icon: <Code size={24} />
     },
     {
-      title: 'Access control',
-      description: 'Owner, admin, member and viewer roles.',
+      title: 'Custom Team Roles',
+      description: 'Define specific organizational roles (e.g. "Cybersec") managed exclusively by the team owner.',
       icon: <Shield size={24} />
     },
     {
-      title: 'Version history',
-      description: 'Every push is versioned. Roll back anytime.',
+      title: 'Teammate Aliases',
+      description: 'Locally assign custom nicknames to teammate user IDs or emails for friendly display.',
+      icon: <UserCheck size={24} />
+    },
+    {
+      title: 'Pushed Age Tracking',
+      description: 'Logs precise absolute push timestamps alongside clear, readable relative ages.',
       icon: <Clock size={24} />
     },
     {
-      title: 'Works anywhere',
-      description: 'Any language, any file, any folder.',
+      title: 'LLM & AI Agent Ready',
+      description: 'Dedicated guides (llms.txt, GEMINI.md) for programmatic agent context passing.',
+      icon: <Cpu size={24} />
+    },
+    {
+      title: 'Resilient Ignores',
+      description: 'Secure .airsnipignore filters out massive folders, build paths, and git metadata.',
       icon: <Globe size={24} />
     }
   ]
@@ -38,6 +48,12 @@ const Features = () => {
   return (
     <section className="features section-padding" style={{ background: 'var(--bg-light)' }}>
       <div className="container">
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 700, marginBottom: '1rem' }}>Supercharged Sharing.</h2>
+          <p style={{ color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto' }}>
+            Airsnip simplifies codebase synchronization, giving humans and autonomous AI helpers equal superpowers.
+          </p>
+        </div>
         <div className="features-grid" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -84,3 +100,4 @@ const AnimatedFeature = ({ title, description, icon, delay }: { title: string, d
 }
 
 export default Features
+

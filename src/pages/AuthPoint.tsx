@@ -1,13 +1,9 @@
 import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from '../lib/supabase'
 
 type State = 'loading' | 'success' | 'done' | 'error'
 type LoginMode = 'callback' | 'manual'  // callback = CLI browser flow, manual = copy-paste fallback
 
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-)
 
 export default function AuthPoint() {
   const [state, setState] = useState<State>('loading')
