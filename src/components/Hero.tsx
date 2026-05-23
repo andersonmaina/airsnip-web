@@ -78,7 +78,7 @@ const Hero = () => {
         lineHeight: 1.1,
         marginBottom: '1.5rem',
         animation: 'slideUp 500ms ease-out forwards'
-      }}>AirDrop for developer teams.</h1>
+      }}>AirDrop for developer teams & LLMs.</h1>
       <p className="subtitle" style={{
         fontSize: 'clamp(1rem, 4vw, 1.25rem)',
         color: 'var(--text-muted)',
@@ -86,9 +86,9 @@ const Hero = () => {
         margin: '0 auto 3rem',
         padding: '0 1rem'
       }}>
-        Push a file, function, or folder from your terminal. 
-        Any teammate can pull it instantly — no browser, 
-        no copy-paste, no context switching.
+        Push files, folders, or AST-parsed functions from your terminal. 
+        Teammates and AI agents can pull snippets instantly — zero context switching, 
+        zero manual copy-paste.
       </p>
 
       <div className="waitlist-container" style={{ maxWidth: '500px', margin: '0 auto 1.5rem', width: '100%' }}>

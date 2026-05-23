@@ -34,7 +34,7 @@ const Navbar = () => {
           alignItems: 'center'
         }}>
           <Link to="/docs" style={{ fontWeight: 500, color: 'var(--text-muted)' }}>Docs</Link>
-          <a href="https://github.com/Airsnip" className="mobile-hide" style={{ fontWeight: 500, color: 'var(--text-muted)' }}>GitHub</a>
+          <a href="https://github.com/andersonmaina/airsnip" className="mobile-hide" style={{ fontWeight: 500, color: 'var(--text-muted)' }}>GitHub</a>
           <a href="https://x.com/aairsnip" style={{ fontWeight: 500, color: 'var(--text-muted)' }}>X</a>
         </div>
       </div>

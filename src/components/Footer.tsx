@@ -13,7 +13,7 @@ const Footer = () => {
             <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>AirDrop for developer teams.</p>
           </div>
           <div className="footer-links" style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
-            <a href="https://github.com/Airsnip" style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>GitHub</a>
+            <a href="https://github.com/andersonmaina/airsnip" style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>GitHub</a>
             <a href="https://x.com/aairsnip" style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>X (Twitter)</a>
             <a href="https://npmjs.com/package/airsnip" style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>npm</a>
             <a href="https://producthunt.com" style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Product Hunt</a>

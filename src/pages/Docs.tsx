@@ -66,7 +66,7 @@ const Docs = () => {
           <p style={{ marginBottom: '1rem' }}>
             Airsnip is pre-architected as a native tool for Large Language Models (LLMs) and autonomous AI coding agents (such as Claude Code or Gemini assistants):
           </p>
-          <div style={{ background: 'var(--bg-light)', padding: '1.25rem', borderRadius: '8px', borderLeft: '4px solid var(--primary)' }}>
+          <div style={{ background: 'var(--bg-light)', padding: '1.25rem', borderRadius: '8px', borderLeft: '4px solid var(--primary)', marginBottom: '3rem' }}>
             <p style={{ fontWeight: 600, marginBottom: '0.5rem' }}>🤖 Agentic Context Passing</p>
             <p style={{ fontSize: '0.9375rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
               Whenever you delegate tasks to subagents or pair-program with AI, they can utilize preconfigured workspace guide files in the repository root to understand exact Airsnip command specs:
@@ -76,6 +76,39 @@ const Docs = () => {
               <li><strong>CLAUDE.md</strong>: Concise recipes, build, test, and single-function pushing tips for Claude.</li>
               <li><strong>GEMINI.md</strong>: Execution standards and mock setups for Gemini agent tools.</li>
             </ul>
+          </div>
+        </section>
+
+        <section>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', borderBottom: '1px solid var(--border-blue)', paddingBottom: '0.5rem' }}>Security Architecture & Hardening</h2>
+          <p style={{ marginBottom: '1rem' }}>
+            Airsnip enforces strong security policies at every layer to protect your team's code sharing environment:
+          </p>
+          <div style={{ display: 'grid', gap: '1.5rem', marginTop: '1.5rem' }}>
+            <div style={{ paddingLeft: '1rem', borderLeft: '3px solid var(--success)' }}>
+              <p style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.25rem' }}>🔒 Strict Local File Permissions</p>
+              <p style={{ fontSize: '0.9375rem', color: 'var(--text-muted)' }}>
+                Sensitive files in the local <code>~/.airsnip/</code> directory (such as credentials and teammate metadata databases) are strictly written with <code>0o600</code> permissions. This prevents other local system users on shared hosting or multi-tenant machines from snooping on authorization tokens or team details.
+              </p>
+            </div>
+            <div style={{ paddingLeft: '1rem', borderLeft: '3px solid var(--success)' }}>
+              <p style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.25rem' }}>🛡️ Zip Slip & Path Traversal Mitigations</p>
+              <p style={{ fontSize: '0.9375rem', color: 'var(--text-muted)' }}>
+                The CLI enforces rigorous path resolution checks on all downloads and extractions. If a remote snippet contains path references outside the local workspace (e.g. <code>/etc/</code> or <code>../../</code>), the extraction process rejects it automatically and safely redirects output files within the local repository boundary, thwarting hostile overwrite attempts.
+              </p>
+            </div>
+            <div style={{ paddingLeft: '1rem', borderLeft: '3px solid var(--success)' }}>
+              <p style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.25rem' }}>🔐 PostgreSQL Row-Level Security (RLS)</p>
+              <p style={{ fontSize: '0.9375rem', color: 'var(--text-muted)' }}>
+                Database access is guarded by Postgres RLS rules scoped strictly to active membership links. A user can only access teams, pushes, and memberships to which they are explicitly linked, guaranteeing absolute isolation between organizations.
+              </p>
+            </div>
+            <div style={{ paddingLeft: '1rem', borderLeft: '3px solid var(--success)' }}>
+              <p style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.25rem' }}>👥 Localized RBAC Authorization Threat Model</p>
+              <p style={{ fontSize: '0.9375rem', color: 'var(--text-muted)' }}>
+                Custom team roles (such as `"Cybersec"`) are stored in local client registries rather than global SQL schemas. While this provides maximum agility and zero server maintenance, it is a client-side authorization model; dynamic enterprise policies should always pair with native database triggers or custom remote RLS rules where absolute untrusted boundary enforcement is required.
+              </p>
+            </div>
           </div>
         </section>
       </div>
