@@ -35,9 +35,3 @@ airsnip team create frontend-team
 airsnip push file mp_project/src/components/footer/index.ts --tag portfolio_website_footer
 airsnip list
 ```
-
----
-
-## 📄 License
-
-© 2025 Airsnip. All rights reserved. Made for developers.
