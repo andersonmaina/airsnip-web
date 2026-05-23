@@ -1,4 +1,4 @@
-# ✂ Airsnip Landing Page
+#  Airsnip 
 
 > AirDrop for developer teams. Push code. Pull anywhere. No browser needed.
 
@@ -11,71 +11,27 @@ Airsnip is a CLI-first code sharing tool for developer teams. This repository co
 
 ---
 
-## ✨ Features
+## Getting Started
 
-- **CLI-First Experience**: Dark terminal showcase with realistic team workflows.
-- **Dynamic Animations**: Smooth, staggered entrance animations using Intersection Observer.
-- **Waitlist Integration**: Secure email collection powered by Supabase.
-- **Premium Design**: Clean, minimal sky-blue aesthetic inspired by Vercel and Linear.
-- **Fully Responsive**: Optimized for everything from mobile terminals to desktop workstations.
-
----
-
-## 🛠 Tech Stack
-
-- **Framework**: [React 18](https://reactjs.org/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Bundler**: [Vite](https://vitejs.dev/)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Backend**: [Supabase](https://supabase.com/)
-- **Typography**: DM Sans (Body) & DM Mono (Code)
-
----
-
-## 🚀 Getting Started
-
-### 1. Clone the repository
+### 1. Install with node.js
 ```bash
-git clone https://github.com/Airsnip/Landing.git
+npm install -g airsnip
 cd Landing
 ```
 
-### 2. Install dependencies
+### 2. Authenticate - ontime
 ```bash
-npm install
+airsnip login
 ```
 
-### 3. Configure Environment
-Create a `.env` file based on `.env.example`:
+### 5. See docs/help for usage
 ```bash
-cp .env.example .env
+airsnip help
 ```
-Add your Supabase credentials:
-- `VITE_SUPABASE_URL`: Your project's API URL.
-- `VITE_SUPABASE_ANON_KEY`: Your project's public anonymous key.
-
-### 4. Database Setup
-Create a table named `waitlist` in your Supabase project and enable insertions via RLS:
-
-```sql
-create table waitlist (
-  id uuid default gen_random_uuid() primary key,
-  email text not null unique,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
-);
-
--- IMPORTANT: Enable RLS and allow anonymous signups
-alter table waitlist enable row level security;
-
-create policy "Enable insert for anonymous users"
-on waitlist for insert
-to anon
-with check (true);
-```
-
-### 5. Start Development
+### 6. Example - (push a file)
 ```bash
-npm run dev
+airsnip init
+airsnip push file mp_project/src/components/footer/index.ts --tag portfolio_website_footer
 ```
 
 ---
