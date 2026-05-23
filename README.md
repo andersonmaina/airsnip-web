@@ -19,7 +19,7 @@ npm install -g airsnip
 cd Landing
 ```
 
-### 2. Authenticate - ontime
+### 2. Authenticate - onetime
 ```bash
 airsnip login
 ```
