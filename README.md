@@ -31,7 +31,9 @@ airsnip help
 ### 6. Example - (push a file)
 ```bash
 airsnip init
+airsnip team create frontend-team
 airsnip push file mp_project/src/components/footer/index.ts --tag portfolio_website_footer
+airsnip list
 ```
 
 ---
